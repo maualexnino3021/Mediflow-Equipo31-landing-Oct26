@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MediFlow · Triaje de documentos clínicos con IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF8F0;--surface:#FFFFFF;--ink:#241B30;--muted:#4D4260;--line:#D9C9B6;
+  --brand:#9B2556;--on-brand:#FFFFFF;--sun:#F4B740;--sage:#D6EADF;--sage-ink:#1C4636;
+  --peach:#FCDCC5;--peach-ink:#69260A;--plum:#EBDDF1;--plum-ink:#47195F;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A1522;--surface:#272030;--ink:#FAF4FB;--muted:#D3C9DF;--line:#4A3F58;
+    --brand:#F7A1C0;--on-brand:#2B1020;--sun:#F4B740;--sage:#21382D;--sage-ink:#BDE5D0;
+    --peach:#43302A;--peach-ink:#FFCBAE;--plum:#392A45;--plum-ink:#EBCCF7;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A1522;--surface:#272030;--ink:#FAF4FB;--muted:#D3C9DF;--line:#4A3F58;
+  --brand:#F7A1C0;--on-brand:#2B1020;--sun:#F4B740;--sage:#21382D;--sage-ink:#BDE5D0;
+  --peach:#43302A;--peach-ink:#FFCBAE;--plum:#392A45;--plum-ink:#EBCCF7;color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.65 "Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
+h1,h2,h3{font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif;line-height:1.12;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(1.65rem,4vw + 1rem,3.9rem);font-weight:700}
+h2{font-size:clamp(1.35rem,2vw + 1rem,2.3rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+a{color:var(--brand)}
+.wrap{max-width:65rem;margin:0 auto;padding:0 clamp(.9rem,4vw,1.75rem)}
+.hero>*,.problem>*,.feat>*,.team>*,.steps>*{min-width:0}
+section{padding:68px 0}
+.lead{font-size:1.15rem;color:var(--muted);max-width:56ch}
+.btn{display:inline-block;padding:13px 22px;border-radius:999px;font-weight:600;text-decoration:none;border:2px solid var(--brand);transition:transform .15s}
+.btn.main{background:var(--brand);color:var(--on-brand)}
+.btn.ghost{color:var(--brand);background:transparent}
+.btn:hover{transform:translateY(-2px)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:6px}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 16px;padding:18px 0}
+.logo{font:700 1.3rem "Bricolage Grotesque",sans-serif;color:var(--ink);text-decoration:none}
+.logo span{color:var(--brand)}
+.top nav{display:flex;gap:20px;font-size:.95rem}
+.top nav a{color:var(--muted);text-decoration:none}
+.top nav a:hover{color:var(--brand)}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center;padding:42px 0 70px}
+.hero .lead{margin:20px 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.note{margin-top:16px;font-size:.9rem;color:var(--muted);max-width:50ch}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 18px 40px -22px rgba(80,40,60,.35)}
+.slip{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:14px 16px;font-size:.92rem}
+.slip b{display:block;margin-bottom:6px}
+.slip i{display:block;height:7px;border-radius:4px;background:var(--line);margin:7px 0}
+.slip i:nth-of-type(2){width:82%}.slip i:nth-of-type(3){width:64%}
+.down{text-align:center;color:var(--muted);font-size:.85rem;margin:10px 0}
+.route{display:flex;gap:12px;align-items:flex-start;border-radius:14px;padding:12px 14px;margin-top:10px}
+.route b{display:block;font-size:.98rem}
+.route span{font-size:.95rem}
+.route.std{background:var(--sage);color:var(--sage-ink)}
+.route.urg{background:var(--peach);color:var(--peach-ink)}
+.route.hum{background:var(--plum);color:var(--plum-ink)}
+.dot{width:12px;height:12px;border-radius:50%;margin-top:7px;flex:none;background:currentColor}
+.band{background:var(--surface);border-block:1px solid var(--line)}
+.problem{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.problem ul{margin:0;padding:0;list-style:none;display:grid;gap:14px}
+.problem li{padding-left:20px;position:relative}
+.problem li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:8px;border-radius:50%;background:var(--sun)}
+.steps{margin:34px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s}
+.steps li{counter-increment:s;border-top:3px solid var(--sun);padding-top:14px}
+.steps li::before{content:counter(s);font:700 1.6rem "Bricolage Grotesque",sans-serif;color:var(--brand);display:block}
+.steps p{font-size:.95rem;color:var(--muted);margin-top:4px}
+.feat{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:10px 48px}
+.feat div{padding:16px 0;border-bottom:1px solid var(--line)}
+.feat p{color:var(--muted);font-size:.97rem;margin-top:3px}
+.callout{background:var(--plum);color:var(--plum-ink);border-radius:20px;padding:30px 32px;display:grid;gap:10px}
+.callout p{max-width:70ch}
+.limits{margin:22px 0 0;padding:0;list-style:none;display:grid;gap:12px;max-width:72ch}
+.limits li{padding-left:22px;position:relative;color:var(--muted)}
+.limits li::before{content:"";position:absolute;left:0;top:.72em;width:9px;height:9px;border-radius:3px;background:var(--brand)}
+.limits b{color:var(--ink)}
+.stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.stack span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:.93rem}
+.team{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px 30px}
+.team p{color:var(--muted);font-size:.93rem}
+.close{text-align:center;padding:76px 0}
+.close .lead{margin:14px auto 26px}
+.close .cta{justify-content:center}
+footer{padding:26px 0 40px;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media (max-width:820px){
+  .hero,.problem,.feat{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .team{grid-template-columns:1fr 1fr}
+  section{padding:50px 0}
+  .top nav a:not(:last-child){display:none}
+}
+@media (max-width:520px){.steps,.team{grid-template-columns:1fr}}
+@media (max-width:360px){
+  body{font-size:1rem}
+  section{padding:34px 0}
+  .hero{padding:20px 0 40px;gap:26px}
+  .top nav{display:none}
+  .cta{flex-direction:column}
+  .btn{display:block;text-align:center;width:100%;padding:12px 14px}
+  .board{padding:14px}
+  .callout{padding:20px 18px}
+  .stack span{padding:6px 11px;font-size:.9rem}
+}
+@media (max-width:260px){html{font-size:14px}}
+@media (min-width:1500px){html{font-size:112.5%}}
+@media (min-width:1900px){html{font-size:137.5%}}
+@media (min-width:2500px){html{font-size:175%}}
+@media (min-width:3400px){html{font-size:225%}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#">Medi<span>Flow</span></a>
+    <nav>
+      <a href="#como">Cómo funciona</a>
+      <a href="#limites">Límites</a>
+      <a href="#equipo">Equipo</a>
+      <a href="https://mediflow-g10-equipo31.streamlit.app">Probar la demo</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Cada documento clínico, en el lugar correcto y a tiempo.</h1>
+      <p class="lead">MediFlow lee recetas, informes y órdenes en PDF, imagen o texto. Los clasifica, extrae los datos clave y los envía al destino que corresponde. Cuando no está seguro, le pasa el caso a una persona.</p>
+      <div class="cta">
+        <a class="btn main" href="https://mediflow-g10-equipo31.streamlit.app">Probar la demo</a>
+        <a class="btn ghost" href="https://youtu.be/s88JQiqFVXk">Ver el video</a>
+      </div>
+      <p class="note">La primera carga puede tardar hasta un minuto: el servidor gratuito se apaga cuando no se usa.</p>
+    </div>
+    <div class="board" aria-label="Ejemplo del recorrido de un documento">
+      <div class="slip"><b>Receta médica recibida</b><i></i><i></i><i></i></div>
+      <div class="down">MediFlow decide el destino</div>
+      <div class="route std"><span class="dot"></span><div><b>Estándar</b><span>Confianza alta, sin señales de alarma.</span></div></div>
+      <div class="route urg"><span class="dot"></span><div><b>Urgente</b><span>Avisa por Slack y correo al instante.</span></div></div>
+      <div class="route hum"><span class="dot"></span><div><b>Revisión humana</b><span>Un auditor aprueba o rechaza el caso.</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="band">
+  <section class="wrap">
+    <div class="problem">
+      <h2>Hoy, la mayoría de estos documentos se leen y se derivan a mano.</h2>
+      <ul>
+        <li>Hospitales, laboratorios y aseguradoras reciben a diario documentos en formatos muy distintos.</li>
+        <li>Leerlos uno por uno es lento y se presta a errores.</li>
+        <li>Un caso urgente puede quedar esperando en la misma fila que uno de rutina.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<section class="wrap" id="como">
+  <h2>Cómo funciona</h2>
+  <p class="lead" style="margin-top:10px">Dos agentes de IA trabajan en secuencia, y el sistema revisa su trabajo antes de decidir.</p>
+  <ol class="steps">
+    <li><h3>Recibe</h3><p>PDF, JPG, PNG, TXT, JSON o Markdown, desde la interfaz o la API.</p></li>
+    <li><h3>Clasifica y extrae</h3><p>Un agente identifica el tipo de documento y otro extrae los datos clínicos.</p></li>
+    <li><h3>Valida y puntúa</h3><p>Revisa formato y consistencia, y calcula un nivel de confianza: alta, media o baja.</p></li>
+    <li><h3>Enruta</h3><p>Estándar, urgente o revisión humana. Si hay dudas, la confianza pesa más que la urgencia.</p></li>
+  </ol>
+</section>
+
+<div class="band">
+  <section class="wrap">
+    <h2>Lo que lo hace confiable</h2>
+    <div class="feat">
+      <div><h3>Respaldo si falla la IA</h3><p>Si Gemini no responde, el sistema reintenta con Groq antes de marcar un fallo técnico.</p></div>
+      <div><h3>Alertas de urgencia</h3><p>Los casos urgentes avisan por Slack y correo. Si la alerta falla, el procesamiento sigue.</p></div>
+      <div><h3>Historial que nunca se sobrescribe</h3><p>Cada corrida queda registrada, con la huella SHA-256 del archivo original.</p></div>
+      <div><h3>Confianza según el tipo de documento</h3><p>Un dato ausente solo penaliza si es crítico para ese tipo. Un certificado no necesita medicamentos.</p></div>
+      <div><h3>Departamento de destino</h3><p>Cada documento indica a qué área corresponde, además de su destino principal.</p></div>
+      <div><h3>Pruebas automatizadas</h3><p>361 pruebas aprobadas en la validación de integración del último sprint.</p></div>
+    </div>
+  </section>
+</div>
+
+<section class="wrap">
+  <div class="callout">
+    <h2>Por qué el auditor aprueba o rechaza, y no edita</h2>
+    <p>Un documento clínico lo emite un tercero, por ejemplo un médico. Si el auditor corrigiera sus datos, el sistema ya no reflejaría lo que realmente se emitió. Por eso se rechaza con motivo y notas, y se pide el documento correcto. Cada decisión queda en el historial.</p>
+  </div>
+</section>
+
+<section class="wrap" id="limites">
+  <h2>Lo que MediFlow todavía no hace</h2>
+  <p class="lead" style="margin-top:10px">Preferimos decirlo claro. Son los límites conocidos de esta versión.</p>
+  <ul class="limits">
+    <li><b>No valida la plausibilidad clínica.</b> No detecta contradicciones médicas, como un diagnóstico que no corresponde al sexo o la edad del paciente.</li>
+    <li><b>La urgencia necesita señales explícitas.</b> Busca signos vitales o términos de alarma en el texto; no infiere gravedad implícita.</li>
+    <li><b>Procesa el documento tal como llega.</b> No corrige datos incoherentes de origen.</li>
+    <li><b>El panel de revisión no tiene autenticación.</b> El auditor escribe su nombre y queda registrado en cada decisión.</li>
+  </ul>
+  <p class="note">Próximos pasos: un motor de reglas de plausibilidad clínica y reglas de triaje configurables sin código.</p>
+</section>
+
+<div class="band">
+  <section class="wrap">
+    <h2>Tecnologías</h2>
+    <div class="stack">
+      <span>Python 3.11</span><span>FastAPI</span><span>LangGraph</span><span>Pydantic</span>
+      <span>Google Gemini</span><span>Groq</span><span>OCI Object Storage</span>
+      <span>Streamlit</span><span>n8n</span><span>Pytest</span><span>Render</span>
+    </div>
+  </section>
+</div>
+
+<section class="wrap" id="equipo">
+  <h2>El equipo</h2>
+  <div class="team">
+    <div><h3>Kimberlyn</h3><p>Liderazgo, contratos Pydantic, ingesta con FastAPI e integración del flujo.</p></div>
+    <div><h3>Katherine</h3><p>Estructura base, OCI, persistencia, historial y huella SHA-256.</p></div>
+    <div><h3>Mauricio</h3><p>Agente Extractor, fallback con Groq y panel de revisión humana.</p></div>
+    <div><h3>Jennifer</h3><p>Orquestación con LangGraph, confianza, urgencia y enrutamiento.</p></div>
+    <div><h3>Zahir</h3><p>Agente Clasificador y alertas de urgencia con n8n.</p></div>
+    <div><h3>Tatiana</h3><p>Validación de consistencia y dataset de casos de prueba.</p></div>
+  </div>
+</section>
+
+<div class="band">
+  <section class="wrap close">
+    <h2>Pruébalo con un documento tuyo</h2>
+    <p class="lead">Sube una receta o un informe y mira qué destino elige MediFlow.</p>
+    <div class="cta">
+      <a class="btn main" href="https://mediflow-g10-equipo31.streamlit.app">Probar la demo</a>
+      <a class="btn ghost" href="https://github.com/No-Country-simulation/G10-LATAM-EQUIPO-31">Ver el código</a>
+      <a class="btn ghost" href="https://mediflow-api-test.onrender.com/docs">Documentación de la API</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>MediFlow · Hackathon ONE G10, Oracle Next Education &amp; Alura · Equipo 31</span>
+    <span>Proyecto educativo: no reemplaza el criterio clínico.</span>
+  </div>
+</footer>
+</body>
+</html>
