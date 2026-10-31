@@ -120,6 +120,9 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 @media (min-width:2500px){html{font-size:175%}}
 @media (min-width:3400px){html{font-size:225%}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+.member h3{display:flex;align-items:center;gap:10px}
+.flag{width:1.6rem;height:1.6rem;border-radius:50%;object-fit:cover;border:2px solid var(--line);flex:none}
+.mail{display:block;margin-top:4px;font-size:.9rem;color:var(--brand);overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -225,12 +228,12 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 <section class="wrap" id="equipo">
   <h2>El equipo</h2>
   <div class="team">
-    <div><h3>Kimberlyn</h3><p>Liderazgo, contratos Pydantic, ingesta con FastAPI e integración del flujo.</p></div>
-    <div><h3>Katherine</h3><p>Estructura base, OCI, persistencia, historial y huella SHA-256.</p></div>
-    <div><h3>Mauricio</h3><p>Agente Extractor, fallback con Groq y panel de revisión humana.</p></div>
-    <div><h3>Jennifer</h3><p>Orquestación con LangGraph, confianza, urgencia y enrutamiento.</p></div>
-    <div><h3>Zahir</h3><p>Agente Clasificador y alertas de urgencia con n8n.</p></div>
-    <div><h3>Tatiana</h3><p>Validación de consistencia y dataset de casos de prueba.</p></div>
+    <div class="member"><h3><img class="flag" src="https://flagcdn.com/w80/co.png" alt="Colombia" width="26" height="26">Kimberlyn Carchi</h3><p>Liderazgo, contratos Pydantic, ingesta con FastAPI e integración del flujo.</p><a class="mail" href="mailto:kimberlyncarchi@gmail.com">kimberlyncarchi@gmail.com</a></div>
+    <div class="member"><h3><img class="flag" src="https://flagcdn.com/w80/py.png" alt="Paraguay" width="26" height="26">Katherine Segovia</h3><p>Estructura base, OCI, persistencia, historial y huella SHA-256.</p><a class="mail" href="mailto:segovia.katherine@gmail.com">segovia.katherine@gmail.com</a></div>
+    <div class="member"><h3><img class="flag" src="https://flagcdn.com/w80/co.png" alt="Colombia" width="26" height="26">Mauricio Niño</h3><p>Agente Extractor, fallback con Groq y panel de revisión humana.</p><a class="mail" href="mailto:unamauricio2013@gmail.com">unamauricio2013@gmail.com</a></div>
+    <div class="member"><h3><img class="flag" src="https://flagcdn.com/w80/ve.png" alt="Venezuela" width="26" height="26">Jennifer Silva</h3><p>Orquestación con LangGraph, confianza, urgencia y enrutamiento.</p><a class="mail" href="mailto:jennifersilva28@gmail.com">jennifersilva28@gmail.com</a></div>
+    <div class="member"><h3><img class="flag" src="https://flagcdn.com/w80/pe.png" alt="Perú" width="26" height="26">Zahir Diaz</h3><p>Agente Clasificador y alertas de urgencia con n8n.</p><a class="mail" href="mailto:lui71.x@gmail.com">lui71.x@gmail.com</a></div>
+    <div class="member"><h3><img class="flag" src="https://flagcdn.com/w80/co.png" alt="Colombia" width="26" height="26">Tatiana Torres</h3><p>Validación de consistencia y dataset de casos de prueba.</p><a class="mail" href="mailto:Tatis_960215@hotmail.com">Tatis_960215@hotmail.com</a></div>
   </div>
 </section>
 
